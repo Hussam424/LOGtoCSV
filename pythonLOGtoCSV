@@ -1,0 +1,21 @@
+import re
+import csv
+
+# Use raw strings, double backslashes, or forward slashes for file paths
+logfile = r'C:\path\to\your\logfile.log'
+csvfile = r'C:\path\to\your\output.csv'
+
+# Regular expression to match log entry patterns
+pattern = re.compile(r'(?P<ip>\S+) - - \[(?P<time>[^\]]+)\] "(?P<method>\S+) (?P<url>\S+) (?P<protocol>\S+)" (?P<status>\d+) (?P<size>\S+) "(?P<referrer>[^\"]+)" "(?P<agent>[^\"]+)"')
+
+with open(logfile, 'r') as infile, open(csvfile, 'w', newline='') as outfile:
+    writer = csv.writer(outfile)
+    # Write the CSV header
+    writer.writerow(['IP', 'Time', 'Method', 'URL', 'Protocol', 'Status', 'Size', 'Referrer', 'Agent'])
+    
+    for line in infile:
+        match = pattern.match(line)
+        if match:
+            writer.writerow(match.groups())
+
+print("Log file converted to CSV successfully.")
